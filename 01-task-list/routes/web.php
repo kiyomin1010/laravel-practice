@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
 class Task
@@ -63,8 +64,16 @@ Route::get('/tasks', function () use ($tasks) {
     ]);
 })->name('tasks.index'); // 'index' means list of resources
 
-Route::get('/tasks/{id}', function ($id) {
-    return 'Task Details';
+Route::get('/tasks/{id}', function ($id) use ($tasks) {
+    $task = collect($tasks)->firstWhere('id', $id);
+
+    if (! $task) {
+        abort(Response::HTTP_NOT_FOUND); // 404
+    }
+
+    return view('show', [
+        'task' => $task,
+    ]);
 })->name('tasks.show'); // 'show' means details of the resource
 
 // fallback route

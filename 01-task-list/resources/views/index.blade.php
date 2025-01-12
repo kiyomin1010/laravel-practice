@@ -1,8 +1,8 @@
-<h1>
-    The List of Tasks
-</h1>
+@extends('layouts.app')
 
-<div>
+@section('title', 'The List of Tasks')
+
+@section('content')
     @if (count($tasks) > 0)
         @foreach ($tasks as $task)
             <div>
@@ -12,4 +12,4 @@
     @else
         <div>There is no task!</div>
     @endif
-</div>
+@endsection
