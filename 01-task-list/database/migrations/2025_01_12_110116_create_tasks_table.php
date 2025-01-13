@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id(); // id : BIGINT, PRIMARY KEY, NOT NULL, AUTO INCREMENT
             $table->string('title'); // title : VARCHAR(255)
-            $table->text('description'); // description 칼럼 : TEXT
+            $table->text('description'); // description : TEXT
             $table->text('long_description')->nullable(); // long_description : TEXT, NULLABLE
             $table->boolean('completed')->default(false); // completed : TINYINT
             $table->timestamps(); // created_at , updated_at : TIMESTAMP, NULLABLE

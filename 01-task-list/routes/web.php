@@ -28,7 +28,22 @@ Route::get('/tasks/{id}', function ($id) {
 })->name('tasks.show'); // 'show' means details of the resource
 
 Route::post('/tasks', function (Request $request) {
-    dd($request->all());
+    // If validation fails, the error and flash messages are stored in the user session
+    $data = $request->validate([
+        'title' => 'required|max:255',
+        'description' => 'required',
+        'long_description' => 'required',
+    ]);
+
+    $task = new Task;
+    $task->title = $data['title'];
+    $task->description = $data['description'];
+    $task->long_description = $data['long_description'];
+
+    $task->save();
+
+    return redirect()->route('tasks.show', ['id' => $task->id])
+        ->with('success', 'New task created successfully!');
 })->name('tasks.store');
 
 Route::fallback(function () {
