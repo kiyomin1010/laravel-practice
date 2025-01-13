@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Requests\TaskRequest;
 use App\Models\Task;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,57 +19,35 @@ Route::get('/tasks', function () {
 Route::view('tasks/create', 'create')
     ->name('tasks.create');
 
-Route::get('/tasks/{id}', function ($id) {
-    $task = Task::findOrFail($id);
-
+// Route Model Binding
+// The route automatically finds the model instance by mapping a specific part of the URL to the model's PK, and then it automatically injects the model instance
+Route::get('/tasks/{task}', function (Task $task) {
     return view('show', [
         'task' => $task,
     ]);
 })->name('tasks.show'); // 'show' means details of the resource
 
-Route::get('/tasks/{id}/edit', function ($id) {
-    $task = Task::findOrFail($id);
-
+Route::get('/tasks/{task}/edit', function (Task $task) {
     return view('edit', [
         'task' => $task,
     ]);
 })->name('tasks.edit'); // 'show' means details of the resource
 
-Route::post('/tasks', function (Request $request) {
+Route::post('/tasks', function (TaskRequest $request) {
     // If validation fails, the error and flash messages are stored in the user session
-    $data = $request->validate([
-        'title' => 'required|max:255',
-        'description' => 'required',
-        'long_description' => 'required',
-    ]);
+    $data = $request->validated();
+    $task = Task::create($data); // Mass assignment
 
-    $task = new Task;
-    $task->title = $data['title'];
-    $task->description = $data['description'];
-    $task->long_description = $data['long_description'];
-
-    $task->save();
-
-    return redirect()->route('tasks.show', ['id' => $task->id])
+    return redirect()->route('tasks.show', ['task' => $task])
         ->with('success', 'New task created successfully!');
 })->name('tasks.store');
 
-Route::put('/tasks/{id}', function ($id, Request $request) {
+Route::put('/tasks/{task}', function (Task $task, TaskRequest $request) {
     // If validation fails, the error and flash messages are stored in the user session
-    $data = $request->validate([
-        'title' => 'required|max:255',
-        'description' => 'required',
-        'long_description' => 'required',
-    ]);
+    $data = $request->validated();
+    $task->update($data);
 
-    $task = Task::findOrFail($id);
-    $task->title = $data['title'];
-    $task->description = $data['description'];
-    $task->long_description = $data['long_description'];
-
-    $task->save();
-
-    return redirect()->route('tasks.show', ['id' => $task->id])
+    return redirect()->route('tasks.show', ['task' => $task])
         ->with('success', 'Task updated successfully!');
 })->name('tasks.update');
 
