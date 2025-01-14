@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="mb-4">
-        <a href="{{ route('tasks.create') }}" class="font-medium text-gray-700 underline decoration-red-500">
+        <a href="{{ route('tasks.create') }}" class="link">
             Create New Task
         </a>
     </div>
